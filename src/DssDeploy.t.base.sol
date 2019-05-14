@@ -10,7 +10,7 @@ import {GemJoin} from "dss/join.sol";
 import {WETH9_} from "ds-weth/weth9.sol";
 
 import "./DssDeploy.sol";
-import {Plan} from "./plan.sol";
+import {GovActions} from "./govActions.sol";
 
 contract Hevm {
     function warp(uint256) public;
@@ -113,7 +113,7 @@ contract DssDeployTestBase is DSTest {
     Spotter spotter;
     Pot pot;
 
-    Plan plan;
+    GovActions govActions;
 
     Flipper ethFlip;
 
@@ -142,7 +142,7 @@ contract DssDeployTestBase is DSTest {
         spotFab = new SpotFab();
         potFab = new PotFab();
         pauseFab = new PauseFab();
-        plan = new Plan();
+        govActions = new GovActions();
 
         dssDeploy = new DssDeploy(
             vatFab,
@@ -180,13 +180,21 @@ contract DssDeployTestBase is DSTest {
     }
 
     function file(address who, bytes32 what, uint256 data) external {
-        pause.plot(address(plan), abi.encodeWithSignature("file(address,bytes32,uint256)", who, what, data), now);
-        pause.exec(address(plan), abi.encodeWithSignature("file(address,bytes32,uint256)", who, what, data), now);
+        address      usr = address(govActions);
+        bytes memory fax = abi.encodeWithSignature("file(address,bytes32,uint256)", who, what, data);
+        uint         eta = now;
+
+        pause.plot(usr, fax, eta);
+        pause.exec(usr, fax, eta);
     }
 
     function file(address who, bytes32 ilk, bytes32 what, uint256 data) external {
-        pause.plot(address(plan), abi.encodeWithSignature("file(address,bytes32,bytes32,uint256)", who, ilk, what, data), now);
-        pause.exec(address(plan), abi.encodeWithSignature("file(address,bytes32,bytes32,uint256)", who, ilk, what, data), now);
+        address      usr = address(govActions);
+        bytes memory fax = abi.encodeWithSignature("file(address,bytes32,bytes32,uint256)", who, ilk, what, data);
+        uint         eta = now;
+
+        pause.plot(usr, fax, eta);
+        pause.exec(usr, fax, eta);
     }
 
     function deployKeepAuth() public {
